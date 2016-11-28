@@ -1,0 +1,12 @@
+The sender divides the input plaintext message into contiguous 252-byte data segments and assigns SC to each of them. The sequence counter (SC) value is
+increased by 1 in increased order (initially SC A = 0). If there are not enough data in the data segment of the last data packet, pad a 1 followed by as many 0 as necessary.
+The sender divides the input plaintext message into contiguous 252-byte data segments and assigns SC to each of them. The sequence counter (SC) value is
+increased by 1 in increased order (initially SC A = 0). If there are not enough data in the data segment of the last data packet, pad a 1 followed by as many 0 as necessary.
+The sender divides the input plaintext message into contiguous 252-byte data segments and assigns SC to each of them. The sequence counter (SC) value is
+increased by 1 in increased order (initially SC A = 0). If there are not enough data in the data segment of the last data packet, pad a 1 followed by as many 0 as necessary.
+The sender divides the input plaintext message into contiguous 252-byte data segments and assigns SC to each of them. The sequence counter (SC) value is
+increased by 1 in increased order (initially SC A = 0). If there are not enough data in the data segment of the last data packet, pad a 1 followed by as many 0 as necessary.
+The sender divides the input plaintext message into contiguous 252-byte data segments and assigns SC to each of them. The sequence counter (SC) value is
+increased by 1 in increased order (initially SC A = 0). If there are not enough data in the data segment of the last data packet, pad a 1 followed by as many 0 as necessary.
+The sender divides the input plaintext message into contiguous 252-byte data segments and assigns SC to each of them. The sequence counter (SC) value is
+increased by 1 in increased order (initially SC A = 0). If there are not enough data in the data segment of the last data packet, pad a 1 followed by as many 0 as necessary.
