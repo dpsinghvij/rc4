@@ -16,6 +16,7 @@ import static java.util.Collections.swap;
 /**
  * Created by davinder on 16/10/16.
  * Implementation of RC4 cipher
+ *
  */
 public class RC4 {
     private List<Byte> state = new ArrayList<>();    // state vector
@@ -26,17 +27,16 @@ public class RC4 {
     private String log= "%d. S is %s with i=%d and j= %d "; // String to show output
     private int numberOfRounds;         // number of rounds PRGA/IPRGA should run
     private int i=0,j=0;
-    private int sequenceCounter;
+    private int sequenceCounter;        // this maintains the current SequenceCounter of the RC4
     private PrintWriter writer;
 
     /**
      *
      * @param key Key for encryptiion
-     * @param numberOfRounds count of rounds to be executed by PRGA and IPRGA
+     *
      */
-    public RC4(byte[] key, int numberOfRounds) {
+    public RC4(byte[] key) {
         intialize(key);
-        this.numberOfRounds= numberOfRounds;
     }
 
     /**
@@ -88,7 +88,7 @@ public class RC4 {
             // Java doesn't have unsigned byte, that means it can save values from -128 to 127
             // So solution to get values greater than 127
             // we AND byte with 0xff, to get its value
-            j= (j+state.get(i)&0xff)%255;
+            j= (j+state.get(i)&0xff)%256;
             swap(state,i,j);
             int t= (state.get(i)&0xff+state.get(j)&0xff)%256;
             k= state.get(t);
@@ -104,7 +104,7 @@ public class RC4 {
  //       IPRGA(state,i,j,n-1);
     }
 
-    public void PRGAWithoutOutput(int packets){
+ /*   public void PRGAWithoutOutput(int packets){
 
 
         int n=0;
@@ -116,15 +116,15 @@ public class RC4 {
             // Java doesn't have unsigned byte, that means it can save values from -128 to 127
             // So I solution to get values greater than 127
             // we AND byte with 0xff, to get its value
-            j= (j+state.get(i)&0xff)%255;
+            j= (j+state.get(i)&0xff)%256;
             swap(state,i,j);
             n++;
             int t= (state.get(i)&0xff+state.get(j)&0xff)%256;
             k= state.get(t);
             displayOutput(this.i, j);
-            /*byte outputByte= (byte) (k ^ messagePacket.get(this.i));
+            *//*byte outputByte= (byte) (k ^ messagePacket.get(this.i));
             messagePacket.add(outputByte);
-            */
+            *//*
         }
         sequenceCounter+=packets;
     //    displayOutput(i, j);
@@ -132,10 +132,10 @@ public class RC4 {
         //       IPRGA(state,i,j,n-1);
     }
 
-    /**
+    *//**
      * runs a loop in which we iterate to get back previous RC4
      * State using current RC4 state
-     */
+     *//*
     public void IPRGA(int fromSC, int toSC){
 
         int diffSC= toSC-fromSC;     // current round
@@ -145,18 +145,18 @@ public class RC4 {
         // loop for iteration
         int itr=1;
         while (itr<dataPacketCtr){
-            i=i&0xff;
-            j=j&0xff;
+            *//*i=i&0xff;
+            j=j&0xff;*//*
             swap(state,i,j);
             j= (j-state.get(i)&0xff +256)%256;
-            i= (i-1)%256;
+            i= ((i-1)+256)%256;
            displayOutput(i, j);
             itr++;
         }
 
         sequenceCounter-=diffSC;
         //displayOutput(i,j);
-    }
+    }*/
 
     /**
      * displays formatted output
@@ -175,7 +175,7 @@ public class RC4 {
     }
 
     /**
-     * This function helps in intitalizing the
+     * This function helps in initializing the
      * state vector. Here t (temporary vector) is used to produce initial permutation of
      * state.
      */
@@ -187,22 +187,92 @@ public class RC4 {
         }
     }
 
+    /**
+     * This function takes back the state array to the state of previous
+     * Sequence counter. It accomplishes this by running loop for 268 times
+     */
+    public void IPRGA(){
+
+        int dataPacketCtr= Constants.ENCRYPTED_PACKET_SIZE;
+       /* System.out.println("Initial state  \\|/");
+        displayOutput(i, j);*/
+        // loop for iteration
+        int itr=0;
+        // counter is executed for 268 times so that it can be switched to previous
+        // Sequence Counter state
+        while (itr<dataPacketCtr){
+
+            swap(state,i,j);
+            j= (j-state.get(i)&0xff +256)%256;
+            i= ((i-1)+256)%256;
+            //   displayOutput(i, j);
+            itr++;
+        }
+        // decrease global sequence counter by 1
+        sequenceCounter--;
+        displayOutput(i,j);
+    }
+
+    /**
+     * This function brings forward the state of State array by 1 Sequence Counter.
+     * It accomplishes this by running loop for 268 times
+     */
+    public void PRGAWithoutOutput(){
 
 
+        int n=0;
+        byte k;
+        // counter is executed for 268 times so that it can be switched to previous
+        // Sequence Counter state
+        while (n<Constants.ENCRYPTED_PACKET_SIZE){
+
+            i=(i+1)%256;
+            // Java doesn't have unsigned byte, that means it can save values from -128 to 127
+            // So I solution to get values greater than 127
+            // we AND byte with 0xff, to get its value
+            j= (j+state.get(i)&0xff)%256;
+            swap(state,i,j);
+            n++;
+            int t= (state.get(i)&0xff+state.get(j)&0xff)%256;
+            k= state.get(t);
+            //  displayOutput(this.i, j);
+            /*byte outputByte= (byte) (k ^ messagePacket.get(this.i));
+            messagePacket.add(outputByte);
+            */
+        }
+        // sequence counter is increased by 1
+        sequenceCounter+=1;
+        displayOutput(i, j);
+
+        //       IPRGA(state,i,j,n-1);
+    }
 
 
+    /**
+     * Compares RC4 sequence counter with the Sequence Counter of the received packet,
+     * if difference is greater than zero then IPRGA is called
+     * if difference is less than zero then PRGA is called
+     * if difference=0 then nothing is done
+     * @param sCtr Sequence Counter of the received packet
+     */
     public void adjustRC4State(int sCtr){
         int diff= sequenceCounter-sCtr;
         if(diff>0){
             // Sequence counter of RC4 object is forward so we have to
             // bring it back
-            IPRGA(sequenceCounter,sCtr);
+            // IPRGA(sequenceCounter,sCtr);
+            for (int k = 0; k < diff; k++) {
+                IPRGA();
+            }
         }else if(diff<0){
             // Sequence counter of RC4 object is back so we have to
             // bring it forward by difference
-            PRGAWithoutOutput(-diff);
+            //  PRGAWithoutOutput(-diff);
+            for (int k = 0; k < -diff; k++) {
+                PRGAWithoutOutput();
+            }
         }
-     //  sequenceCounter=sCtr;
+        //  sequenceCounter=sCtr;
     }
 
 }

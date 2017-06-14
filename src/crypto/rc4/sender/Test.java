@@ -16,9 +16,19 @@ public class Test {
         List<List<Byte>> encryptedPackets= new ArrayList<>();
         RC4 rc4= new RC4(key);
        // rc4.PRGAWithoutOutput();
-        rc4.PRGAWithoutOutput(1);
+        rc4.PRGAWithoutOutput();
+        rc4.PRGAWithoutOutput();
+        rc4.PRGAWithoutOutput();
+        rc4.PRGAWithoutOutput();
+        rc4.PRGAWithoutOutput();
     //    rc4.PRGAWithoutOutput(1);
-        rc4.IPRGA(1,0);
+        rc4.IPRGA();
+        rc4.IPRGA();
+        rc4.IPRGA();
+        rc4.IPRGA();
+        rc4.IPRGA();
+
+        rc4.PRGAWithoutOutput();
 
     }
 }

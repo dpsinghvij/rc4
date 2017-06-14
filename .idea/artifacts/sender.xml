@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sender">
+    <output-path>$PROJECT_DIR$/out/artifacts/sender</output-path>
+    <root id="archive" name="rc4sender.jar">
+      <element id="module-output" name="rc4sender" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.2.3/7fe1a94c1aeb958acc876fe616922cc191f3222c/rxjava-1.2.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
